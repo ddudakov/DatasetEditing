@@ -15,3 +15,7 @@ regex
 matplotlib
 imutils
 gradio==3.50.2
+addict
+yapf
+timm
+supervision>=0.22.0

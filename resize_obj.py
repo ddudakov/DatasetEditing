@@ -1,21 +1,8 @@
-#!/usr/bin/python
-#****************************************************************#
-# ScriptName: analysis_data.py
-# Author: Anonymous_123
-# Create Date: 2022-07-25 19:54
-# Modify Author: Anonymous_123
-# Modify Date: 2022-09-25 12:04
-# Function: 
-#***************************************************************#
-
-import os
 import sys
 import numpy as np
 import cv2
-import torch
-from tqdm import tqdm
 import shutil
-import pdb
+from pathlib import Path
 
 import argparse
 
@@ -23,6 +10,7 @@ parser = argparse.ArgumentParser(description='resize object')
 parser.add_argument('--scale', type=float, default=None, help='object scale')
 parser.add_argument('--img_path', type=str, help='image path')
 parser.add_argument('--mask_path', type=str, help='mask path')
+parser.add_argument('--output_path', type=str, help='ouput path')
 
 
 def get_bbox_and_rate(mask):
@@ -93,7 +81,7 @@ def resize_around_the_center_padding(img, mask, bbox, scale_step=1.2):
     img_new = cv2.resize(img_new, (W,H))
     mask_new = cv2.resize(mask_new, (W,H))
     mask_new_full = cv2.resize(mask_new_full, (W,H))
-   
+
     return img_new, mask_new, mask_new_full
 
 def rescale(img, mask, scale=None, max_steps=50):
@@ -146,13 +134,13 @@ def rescale_maximum(img, mask, scale=None, max_steps=50):
     mask_new = cv2.resize(mask_new, (W,H))
 
     return img_new, mask_new, mask_new
-   
+
 
 if __name__ == '__main__':
     args = parser.parse_args()
     scale = args.scale
-    img_path_save = 'results/img_rescaled.png'
-    mask_path_save = 'results/mask_rescaled.png'
+    img_path_save = f"{args.output_path}/{Path(args.img_path).stem}_rescaled.png"
+    mask_path_save = f"{args.output_path}/{Path(args.mask_path).stem}_rescaled.png"
     if scale == None:
         shutil.copy(args.img_path, img_path_save)
         shutil.copy(args.mask_path, mask_path_save)
@@ -181,8 +169,3 @@ if __name__ == '__main__':
             print('Invalid size, using the original one')
             shutil.copy(args.img_path, img_path_save)
             shutil.copy(args.mask_path, mask_path_save)
-        
-        
-    
-    
-

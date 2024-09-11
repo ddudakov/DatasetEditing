@@ -93,7 +93,7 @@ class ImageEditor:
         self.model, self.diffusion = create_model_and_diffusion(**self.model_config)
         self.model.load_state_dict(
             torch.load(
-                "checkpoints/256x256_diffusion_uncond.pt"
+                "/content/DatasetEditing/checkpoints/256x256_diffusion_uncond.pt"
                 if self.args.model_output_size == 256
                 else "checkpoints/512x512_diffusion.pt",
                 map_location="cpu",
@@ -109,7 +109,7 @@ class ImageEditor:
 
         self.classifier = create_classifier(**self.classifier_config)
         self.classifier.load_state_dict(
-            torch.load("checkpoints/256x256_classifier.pt", map_location="cpu")
+            torch.load("/content/DatasetEditing/checkpoints/256x256_classifier.pt", map_location="cpu")
         )
         # self.classifier.requires_grad_(False).eval().to(self.device)
 

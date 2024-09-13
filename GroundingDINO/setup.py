@@ -1,14 +1,73 @@
+# coding=utf-8
+# Copyright 2022 The IDEA Authors. All rights reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ------------------------------------------------------------------------------------------------
+# Modified from
+# https://github.com/fundamentalvision/Deformable-DETR/blob/main/models/ops/setup.py
+# https://github.com/facebookresearch/detectron2/blob/main/setup.py
+# https://github.com/open-mmlab/mmdetection/blob/master/setup.py
+# https://github.com/Oneflow-Inc/libai/blob/main/setup.py
+# ------------------------------------------------------------------------------------------------
+
+import glob
+import os
+import subprocess
+
+import subprocess
+import sys
+
+def install_torch():
+    try:
+        import torch
+    except ImportError:
+        subprocess.check_call([sys.executable, "-m", "pip", "install", "torch"])
+
+# Call the function to ensure torch is installed
+install_torch()
+
 import torch
 from setuptools import find_packages, setup
 from torch.utils.cpp_extension import CUDA_HOME, CppExtension, CUDAExtension
 
-import glob
-import os
-import sys
+# groundingdino version info
+version = "0.1.0"
+package_name = "groundingdino"
+cwd = os.path.dirname(os.path.abspath(__file__))
+
+
+sha = "Unknown"
+try:
+    sha = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=cwd).decode("ascii").strip()
+except Exception:
+    pass
+
+
+def write_version_file():
+    version_path = os.path.join(cwd, "groundingdino", "version.py")
+    with open(version_path, "w") as f:
+        f.write(f"__version__ = '{version}'\n")
+        # f.write(f"git_version = {repr(sha)}\n")
+
+
+requirements = ["torch", "torchvision"]
+
+torch_ver = [int(x) for x in torch.__version__.split(".")[:2]]
+
 
 def get_extensions():
     this_dir = os.path.dirname(os.path.abspath(__file__))
-    extensions_dir = os.path.join(this_dir, "GroundingDINO", "groundingdino", "models", "GroundingDINO", "csrc")
+    extensions_dir = os.path.join(this_dir, "groundingdino", "models", "GroundingDINO", "csrc")
 
     main_source = os.path.join(extensions_dir, "vision.cpp")
     sources = glob.glob(os.path.join(extensions_dir, "**", "*.cpp"))
@@ -133,13 +192,22 @@ def parse_requirements(fname="requirements.txt", with_version=True):
     packages = list(gen_packages_items())
     return packages
 
+
 if __name__ == "__main__":
+    print(f"Building wheel {package_name}-{version}")
+
+    with open("LICENSE", "r", encoding="utf-8") as f:
+        license = f.read()
+
+    write_version_file()
+
     setup(
-        name="datasetediting",
+        name="groundingdino",
         version="0.1.0",
-        author="Denis",
-        url="https://github.com/ddudakov/DatasetEditing",
-        description="editor for dataset with generative functions",
+        author="International Digital Economy Academy, Shilong Liu",
+        url="https://github.com/IDEA-Research/GroundingDINO",
+        description="open-set object detector",
+        license=license,
         install_requires=parse_requirements("requirements.txt"),
         packages=find_packages(
             exclude=(

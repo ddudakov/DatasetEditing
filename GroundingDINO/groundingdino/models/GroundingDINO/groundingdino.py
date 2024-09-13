@@ -409,3 +409,4 @@ def build_groundingdino(args):
     )
 
     return model
+

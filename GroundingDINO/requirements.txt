@@ -20,5 +20,5 @@ ftfy
 regex
 matplotlib
 imutils
-gradio==3.50.2
+gradio>=5
 omegaconf

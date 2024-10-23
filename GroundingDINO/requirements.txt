@@ -22,3 +22,5 @@ matplotlib
 imutils
 gradio>=5
 omegaconf
+pytorch_lightning
+webdataset
